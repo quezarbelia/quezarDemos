@@ -17,6 +17,9 @@ int main()
             sum+=d;
         }
         prom=sum/n;
+        if(prom>=6)
+            printf("felicidades, aprobaste");
+        else
         printf("El promedio es: %.2f\n",prom);
     }
     getch();
