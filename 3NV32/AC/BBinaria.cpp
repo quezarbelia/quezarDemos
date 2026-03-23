@@ -14,7 +14,9 @@ int tabla[] = {
 
 int main() {
     int pos;
-    int valor = 142; // Valor a buscar
+    int valor; // Valor a buscar
+    printf("Ingrese el valor a buscar: ");
+    cin >> valor;
     
     // Llamada a la función: (arreglo, valor_buscado, limite_inferior, limite_superior)
     pos = Binaria(tabla, valor, 0, sizeof(tabla)/sizeof(tabla[0]) - 1);
