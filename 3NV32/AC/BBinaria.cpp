@@ -1,51 +1,43 @@
 #include <iostream>
+#include <cstdio>
 using namespace std;
 
-// Prototipo de la función
-int Binaria(int*, int, int, int);
-
-// Arreglo global de datos ordenados
-int tabla[] = {
-    1,   3,  12,  33,  42,  43,  44,  45,  54,  55,
-    61,  63,  72,  73,  82,  83,  84,  85,  94,  95,
-    101, 103, 112, 133, 142, 143, 144, 145, 154, 155,
-    161, 163, 172, 173, 182, 183, 184, 185, 194, 195
-};
+// Prototipo
+int busquedaBinaria(const int*, int, int, int, int);
 
 int main() {
-    int pos;
-    int valor; // Valor a buscar
-    printf("Ingrese el valor a buscar: ");
-    cin >> valor;
+    // Arreglo local (no global)
+    const int tabla[] = {
+        1, 3, 12, 33, 42, 43, 44, 45, 54, 55,
+        61, 63, 72, 73, 82, 83, 84, 85, 94, 95,
+        101, 103, 112, 133, 142, 143, 144, 145, 154, 155,
+        161, 163, 172, 173, 182, 183, 184, 185, 194, 195
+    };
     
-    // Llamada a la función: (arreglo, valor_buscado, limite_inferior, limite_superior)
-    pos = Binaria(tabla, valor, 0, sizeof(tabla)/sizeof(tabla[0]) - 1);
+    const int tamaño = sizeof(tabla) / sizeof(tabla[0]);
+    int valor;
     
-    if (pos >= 0) 
-        cout << "Valor " << valor << " encontrado en posicion: " << pos << endl;
-    else 
-        cout << "Valor " << valor << " no encontrado" << endl;
-        
+    // Validación de entrada
+    cout << "Ingrese el valor a buscar: ";
+    if (!(cin >> valor)) {
+        cerr << "Error: entrada invalida" << endl;
+        return 1;
+    }
+    
+    int pos = busquedaBinaria(tabla, valor, 0, tamaño - 1, tamaño);
+    
+    cout << (pos >= 0 ? "Valor " + to_string(valor) + " encontrado en posicion: " + to_string(pos)
+                      : "Valor " + to_string(valor) + " no encontrado") << endl;
+    
     return 0;
 }
 
-// Implementación de la función recursiva
-int Binaria(int* A, int dato, int inferior, int superior) {
-    if (inferior > superior) {
-        return -1; // Caso base: No se encontró el valor
-    }
-
+int busquedaBinaria(const int* arr, int dato, int inferior, int superior, int n) {
+    if (inferior > superior) return -1;
+    
     int mitad = inferior + (superior - inferior) / 2;
-
-    if (A[mitad] == dato) {
-        return mitad; // Caso base: ¡Encontrado!
-    } 
-    else if (A[mitad] > dato) {
-        // El valor es menor, buscamos en la mitad izquierda
-        return Binaria(A, dato, inferior, mitad - 1);
-    } 
-    else {
-        // El valor es mayor, buscamos en la mitad derecha
-        return Binaria(A, dato, mitad + 1, superior);
-    }
+    
+    if (arr[mitad] == dato) return mitad;
+    return arr[mitad] > dato ? busquedaBinaria(arr, dato, inferior, mitad - 1, n)
+                             : busquedaBinaria(arr, dato, mitad + 1, superior, n);
 }
