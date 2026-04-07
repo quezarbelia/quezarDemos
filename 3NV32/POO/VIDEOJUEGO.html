@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Abraham: Misión Fe</title>
+    <style>
+        :root {
+            --primary-color: #6200ee;
+            --accent-color: #03dac6;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* HUD (Heads-up Display) */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #2c2c2c;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .stat-box { font-size: 1.2rem; font-weight: bold; }
+
+        /* Contenedor principal */
+        .viewport {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .active { display: block; animation: zoomIn 0.3s ease; }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Botones de respuesta - Todos iguales para no dar pistas */
+        .btn-choice {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin: 10px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: #333;
+            color: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-choice:active {
+            background: var(--primary-color);
+            transform: translateY(2px);
+        }
+
+        .avatar-img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
+
+        /* Pantalla de Error */
+        .shake { animation: shake 0.5s; border-color: #ff5252; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .star-container {
+            font-size: 4rem;
+            margin: 20px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hud">
+    <div class="stat-box">⭐ <span id="score">0</span></div>
+    <div class="stat-box">🛡️ LVL <span id="lvlDisplay">1</span></div>
+</div>
+
+<div class="viewport">
+    
+    <div id="step1" class="screen active">
+        <div style="font-size: 50px;">🏠➡️🏜️</div>
+        <h2>Nivel 1: El Gran Viaje</h2>
+        <p>Dios le pide a Abraham dejar su casa por una tierra que no conoce. ¿Qué debe poner en su maleta espiritual?</p>
+        <button class="btn-choice" onclick="wrongChoice()">Muchos juguetes y comida</button>
+        <button class="btn-choice" onclick="nextStep(2, 100)">Fe y obediencia total</button>
+        <button class="btn-choice" onclick="wrongChoice()">Un mapa detallado y GPS</button>
+    </div>
+
+    <div id="step2" class="screen">
+        <div style="font-size: 50px;">✨</div>
+        <h2>Nivel 2: La Promesa</h2>
+        <p>Abraham se siente solo, pero Dios le dice que su familia será como las estrellas. ¿Qué hizo Abraham?</p>
+        <button class="btn-choice" onclick="wrongChoice()">Dudó porque ya era muy viejo</button>
+        <button class="btn-choice" onclick="wrongChoice()">Se puso triste y lloró</button>
+        <button class="btn-choice" onclick="nextStep(3, 150)">Creyó a Dios y esperó</button>
+    </div>
+
+    <div id="step3" class="screen">
+        <h2>Subnivel: Cuenta las Promesas</h2>
+        <p>Toca la estrella 7 veces para ver el poder de Dios.</p>
+        <div class="star-container" id="starTarget" onclick="tapStar()">🌟</div>
+        <p id="counterText">Contador: 0</p>
+    </div>
+
+    <div id="step4" class="screen">
+        <div style="font-size: 50px;">⛰️</div>
+        <h2>Nivel 3: La Gran Prueba</h2>
+        <p>En el Monte Moriá, la obediencia es puesta a prueba. ¿Cuál fue la reacción de Abraham ante el altar?</p>
+        <button class="btn-choice" onclick="nextStep(5, 200)">Confiar en que Dios proveería</button>
+        <button class="btn-choice" onclick="wrongChoice()">Salir corriendo con Isaac</button>
+        <button class="btn-choice" onclick="wrongChoice()">Enojarse con Dios</button>
+    </div>
+
+    <div id="win" class="screen">
+        <div style="font-size: 60px;">🏆</div>
+        <h1 style="color: var(--accent-color)">¡MISIÓN CUMPLIDA!</h1>
+        <p>Has completado el camino de Abraham con éxito.</p>
+        <p>Puntaje de Sabiduría: <span id="finalScore">0</span></p>
+        <button class="btn-choice" style="background: var(--accent-color); color: black;" onclick="location.reload()">VOLVER A JUGAR</button>
+    </div>
+
+</div>
+
+<script>
+    let score = 0;
+    let stars = 0;
+
+    function nextStep(current, points) {
+        score += points;
+        document.getElementById('score').innerText = score;
+        document.getElementById('lvlDisplay').innerText = current;
+        
+        // Cambio de pantalla
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const nextId = (current === 5) ? 'win' : 'step' + current;
+        document.getElementById(nextId).classList.add('active');
+        
+        if(current === 5) document.getElementById('finalScore').innerText = score;
+    }
+
+    function tapStar() {
+        stars++;
+        document.getElementById('counterText').innerText = "Contador: " + stars;
+        document.getElementById('starTarget').style.transform = "scale(" + (1 + stars/5) + ")";
+        
+        if (stars >= 7) {
+            nextStep(4, 50);
+        }
+    }
+    
+    function wrongChoice() {
+        const activeScreen = document.querySelector('.screen.active');
+        activeScreen.classList.add('shake');
+        
+        // Intentar vibración si es móvil
+        if (navigator.vibrate) navigator.vibrate(200);
+        
+        setTimeout(() => {
+            activeScreen.classList.remove('shake');
+            alert("❌ ¡Respuesta incorrecta! Peppy dice: '¡Piensa mejor qué haría un amigo de Dios!'");
+        }, 500);
+    }
+</script>
+</body>
+</html>
