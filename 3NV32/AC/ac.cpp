@@ -25,26 +25,25 @@ void menu(){
 }
 
 void burbuja(int arr_orig[], int n) {
-    // Creamos una copia para no alterar el original del main permanentemente
     int arr[n];
     for(int i=0; i<n; i++) arr[i] = arr_orig[i];
 
     int movimientos = 0;
     int comparaciones = 0;
 
-    std::cout << "\n*** Metodo de ordenacion por burbuja ***\n";
+    std::cout << "\n===== Metodo de ordenacion por burbuja =====\n";
     mA(arr, n, "Arreglo original: ");
 
     // Algoritmo simplificado
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
-            comparaciones++; // Cada vez que comparamos dos números
+            comparaciones++;
             if (arr[j] > arr[j + 1]) {
                 // Intercambio
                 int temp = arr[j];
                 arr[j] = arr[j + 1];
                 arr[j + 1] = temp;
-                movimientos++; // Cada vez que movemos un número
+                movimientos++;
             }
         }
     }
@@ -81,7 +80,7 @@ int main() {
                 std::cout << "Opcion no implementada o invalida." << std::endl;
                 break;
         }
-        std::system("cls");
+        system("cls");
     }
     return 0;
 }
