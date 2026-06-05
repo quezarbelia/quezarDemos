@@ -68,10 +68,6 @@ void menu(){
                 arbol();
                 break;
             default:
-                cout<< "Opcion no encontrada" << endl;
-                cout << "\nPresiona Enter para continuar...";
-                limpiarBuffer();
-                cin.get();
                 break;
                 return;
         }
@@ -379,7 +375,7 @@ void grafo(){
 
     char origenLetra, destinoLetra;
     cout << "======= Grafo UPIICSA =======" << endl;
-    cout << "Nodos:\nGraduados(G)\nBasicas(B) \nLigeros(L) \nGobierno (A)\nSociales(S) \nCulturales(C)\nGimnasio (Y)\nINgeneria(I)\nPesados(P)" << endl;
+    cout << "Nodos:\nGraduados(G)\nBasicas(B) \nLigeros(L) \nGobierno (A)\nSociales(S) \nCulturales(C)\nGimnasio (Y)\nIngeneria(I)\nPesados(P)" << endl;
     cout << "Ingrese nodo origen: ";
     cin >> origenLetra;
     cout << "Ingrese nodo destino: ";
