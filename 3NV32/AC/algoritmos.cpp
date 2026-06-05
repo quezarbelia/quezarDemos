@@ -32,6 +32,7 @@ void busquedaBinaria(int arr[], int n);
 void busquedaSecuencial(int arr[], int n);
 void grafo();
 void arbol();
+void arbolMenu();
 
 // MENU PRINCIPAL
 void menu(){
@@ -65,13 +66,17 @@ void menu(){
                 grafo();
                 break;
             case 4:
-                arbol();
+                arbolMenu();
                 break;
             default:
                 break;
                 return;
         }
     }
+    system("cls");
+    cout << "Gracias por usar el programa!" << endl;
+    limpiarBuffer();
+    cin.get();
     system("cls");
 }
 
@@ -417,6 +422,145 @@ void grafo(){
 }
 
 // ARBOL
+struct AristaMST {
+    int origen, destino, peso;
+    bool operator<(const AristaMST& otra) const {
+        return peso < otra.peso;
+    }
+};
+
+struct DisjointSet {
+    vector<int> padre;
+    DisjointSet(int n) {
+        padre.resize(n);
+        for (int i = 0; i < n; i++) padre[i] = i;
+    }
+    int buscar(int i) {
+        if (padre[i] == i) return i;
+        return padre[i] = buscar(padre[i]);
+    }
+    void unir(int i, int j) {
+        int raiz_i = buscar(i);
+        int raiz_j = buscar(j);
+        if (raiz_i != raiz_j) padre[raiz_i] = raiz_j;
+    }
+};
+
+void prim();
+void kruskal();
+void arbol();
+
+void arbolMenu(){
+    system("cls");
+    cout << "\n========== ARBOL DE PESO MINIMO ==========" << endl;
+    cout << "1) Algoritmo de Prim" << endl;
+    cout << "2) Algoritmo de Kruskal" << endl;
+    cout << "3) Arbol No Binario" << endl;
+    cout << "4) Regresar" << endl;
+    cout << "===========================================" << endl;
+    cout << "Selecciona una opcion: ";
+    int opc;
+    cin >> opc;
+    if (opc == 1) {
+        prim();
+    } else if (opc == 2) {
+        kruskal();
+    } else if (opc == 3) {
+        arbol();
+    } else {
+        menu();
+    }
+}
+
+void prim(){
+    system("cls");
+    char nodos[] = {'A','B','C','D'};
+    int V = 4;
+    
+    vector<vector<pair<int, int>>> grafo(V);
+    grafo[0].push_back({1, 10}); grafo[1].push_back({0, 10});
+    grafo[0].push_back({2, 6});  grafo[2].push_back({0, 6});
+    grafo[1].push_back({2, 4});  grafo[2].push_back({1, 4});
+    grafo[1].push_back({3, 8});  grafo[3].push_back({1, 8});
+    grafo[2].push_back({3, 12}); grafo[3].push_back({2, 12});
+
+    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+    vector<bool> visitado(V, false);
+    int costoTotal = 0;
+    int aristasUsadas = 0;
+
+    cout << "\n========== ALGORITMO DE PRIM ==========" << endl;
+    cout << "Grafo: A(0)-B(1)-C(2)-D(3) con pesos: A-B=10, A-C=6, B-C=4, B-D=8, C-D=12" << endl;
+    visitado[0] = true;
+    for (auto vecino : grafo[0]) {
+        pq.push({vecino.second, {0, vecino.first}});
+    }
+
+    while (!pq.empty() && aristasUsadas < V - 1) {
+        auto tope = pq.top();
+        pq.pop();
+
+        int peso = tope.first;
+        int u = tope.second.first;
+        int v = tope.second.second;
+
+        if (visitado[v]) continue;
+
+        visitado[v] = true;
+        aristasUsadas++;
+        costoTotal += peso;
+        cout << "  |--> " << nodos[u] << " - " << nodos[v] << " (Peso: " << peso << ")" << endl;
+
+        for (auto vecino : grafo[v]) {
+            if (!visitado[vecino.first]) {
+                pq.push({vecino.second, {v, vecino.first}});
+            }
+        }
+    }
+    cout << "========================================" << endl;
+    cout << "-> Costo Total MST: " << costoTotal << endl;
+
+    cout << "\nPresiona Enter para continuar...";
+    limpiarBuffer();
+    cin.get();
+    arbolMenu();
+}
+
+void kruskal(){
+    system("cls");
+    char nodos[] = {'A','B','C','D'};
+    int V = 4;
+
+    vector<AristaMST> aristas = {
+        {0, 1, 10}, {0, 2, 6}, {1, 2, 4}, {1, 3, 8}, {2, 3, 12}
+    };
+
+    sort(aristas.begin(), aristas.end());
+
+    DisjointSet ds(V);
+    int costoTotal = 0;
+    int aristasUsadas = 0;
+
+    cout << "\n========== ALGORITMO DE KRUSKAL ==========" << endl;
+    cout << "Grafo: A(0)-B(1)-C(2)-D(3) con pesos: A-B=10, A-C=6, B-C=4, B-D=8, C-D=12" << endl;
+    for (const auto& arista : aristas) {
+        if (aristasUsadas == V - 1) break;
+        if (ds.buscar(arista.origen) != ds.buscar(arista.destino)) {
+            ds.unir(arista.origen, arista.destino);
+            cout << "  |--> " << nodos[arista.origen] << " - " << nodos[arista.destino] << " (Peso: " << arista.peso << ")" << endl;
+            costoTotal += arista.peso;
+            aristasUsadas++;
+        }
+    }
+    cout << "==========================================" << endl;
+    cout << "-> Costo Total MST: " << costoTotal << endl;
+
+    cout << "\nPresiona Enter para continuar...";
+    limpiarBuffer();
+    cin.get();
+    arbolMenu();
+}
+
 void arbol(){
     system("cls");
     Graph graph;
@@ -481,6 +625,8 @@ void arbol(){
     cin.get();
     menu();
 }
+
+
 
 // MAIN
 int main()
